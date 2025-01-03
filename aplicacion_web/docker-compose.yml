@@ -1,0 +1,58 @@
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - "8086:8086" # Puerto de acceso a InfluxDB
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin # Usuario administrador
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword # Contraseña para el admin
+      - DOCKER_INFLUXDB_INIT_ORG=carlos_diego # Nombre de la organización
+      - DOCKER_INFLUXDB_INIT_BUCKET=sensors_bucket # Nombre del bucket inicial
+    volumes:
+      - ./almacenamiento:/var/lib/influxdb2  # Montar el directorio local
+    networks:
+      - app_network  # Conectar a la red personalizada
+
+  backend:
+    build:
+      context: ./backend  # Ruta al directorio donde está el Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000"  # Exponer el puerto de FastAPI
+    depends_on:
+      - influxdb  # Asegura que InfluxDB esté disponible antes de iniciar persistencia
+    networks:
+      - app_network  # Conectar a la red personalizada
+
+  cliente_dragino:
+    build:
+      context: ./cliente_dragino/
+    container_name: cliente_dragino
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+  cliente_milesight:
+    build:
+      context: ./cliente_milesight/
+    container_name: cliente_milesight
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+      #cliente_rak:
+      #build:
+      #context: ./cliente_rak
+      #container_name: cliente_rak
+      #depends_on:
+      #- backend
+      #networks:
+      #- app_network
+
+networks:
+  app_network:
+    driver: bridge  # Configuración predeterminada para redes en Docker
