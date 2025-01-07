@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from dal.influxdb import InfluxDBDAL
 from models import SensorData
 from datetime import datetime
@@ -9,6 +10,19 @@ ACCESS_TOKEN = "cgWnEvJBhPDiish6_vepCia7rjDLBm2mTTK7POEzbySH6yowaMnXVvWyKU1MpYg2
 
 db_dal = InfluxDBDAL(url="http://influxdb:8086", token=ACCESS_TOKEN, org="carlos_diego", bucket="sensors_bucket")
 
+# Configuración de CORS
+origins = [
+    "http://localhost:3000",  # URL de tu frontend
+]
+
+# Agregar el middleware de CORS a la app
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Permitir solicitudes de localhost:3000
+    allow_credentials=True,
+    allow_methods=["*"],  # Permitir todos los métodos HTTP
+    allow_headers=["*"],  # Permitir todos los encabezados
+)
 
 @app.post("/token/{token}")
 async def update_token(token: str):

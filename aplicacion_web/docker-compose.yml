@@ -44,14 +44,14 @@ services:
     networks:
       - app_network
 
-      #cliente_rak:
-      #build:
-      #context: ./cliente_rak
-      #container_name: cliente_rak
-      #depends_on:
-      #- backend
-      #networks:
-      #- app_network
+  cliente_rak:
+    build:
+      context: ./cliente_rak
+    container_name: cliente_rak
+    depends_on:
+      - backend
+    networks:
+      - app_network
 
 networks:
   app_network:

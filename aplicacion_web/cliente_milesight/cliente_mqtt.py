@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 
 THE_BROKER = "eu1.cloud.thethings.network"
-THE_TOPIC = "v3/itaca-mlsght-em320-th-app/devices/eui-24e124785d441512"
+THE_TOPIC = "v3/itaca-mlsght-em320-th-app@ttn/devices/eui-24e124785d441512/up"
 URL_BACKEND = "http://backend:8000"
 
 logging.basicConfig(level=logging.INFO)
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def on_connect(client,userdata, flags, rc):
     logger.info(f"Connected to broker with result code {rc}")
-    client.subscribe(THE_TOPIC, qos=0)
+    client.subscribe(THE_TOPIC)
 
 def on_message(client, userdata, msg):
     logger.info(f"Message received: {msg.topic} -> {msg.payload.decode('utf-8')}")

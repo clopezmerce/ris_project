@@ -15,3 +15,5 @@ __pycache__/
 # Logs
 *.log
 
+#Almacenamiento base de datos
+/aplicacion_web/almacenamiento

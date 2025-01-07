@@ -58,7 +58,7 @@ if __name__ == "__main__":
     client.on_message = on_message
 
     client.username_pw_set(username="upvdisca-rakwireless-rak3172-app@ttn",
-                           password="NNSXS.T5ZXZ566BXKERTFUTAHWIDQQ4ASGYCFLQWYUOZI.PIAS2AO5NPULDBSJ64SXOGUQW3F26LK77X5E4MIQQ2WAL6I6HEDQ")
+                           password="NNSXS.ZINEMTZWMNGJ2BLIKU7Z33ZDOMX2YR55TH653QI.EGY5E6ZYLNZVUOTXA2W6X3YQFVY5N6ZEEUT3AKNOQB5Q7RVXXAQA")
 
     client.connect(THE_BROKER, port=1883, keepalive=60)
 
