@@ -11,7 +11,7 @@ app = FastAPI()
 
 ACCESS_TOKEN = "cgWnEvJBhPDiish6_vepCia7rjDLBm2mTTK7POEzbySH6yowaMnXVvWyKU1MpYg2Nm5poa2mAISSoSWxRrAUsQ=="
 MQTT_BROKER = "eu1.cloud.thethings.network"
-MQTT_TOPIC = "v3/upvdisca-rakwireless-rak3172-app/devices/eui-ac1f09fffe1787e9/down"
+MQTT_TOPIC = "v3/upvdisca-rakwireless-rak3172-app@ttn/devices/eui-ac1f09fffe1787e9/down/push"
 USERNAME = "upvdisca-rakwireless-rak3172-app@ttn"
 PASSWORD = "NNSXS.ZINEMTZWMNGJ2BLIKU7Z33ZDOMX2YR55TH653QI.EGY5E6ZYLNZVUOTXA2W6X3YQFVY5N6ZEEUT3AKNOQB5Q7RVXXAQA"
 
@@ -20,9 +20,18 @@ logger = logging.getLogger(__name__)
 
 db_dal = InfluxDBDAL(url="http://influxdb:8086", token=ACCESS_TOKEN, org="carlos_diego", bucket="sensors_bucket")
 
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        logger.info("Connected to TTN MQTT broker successfully")
+    else:
+        logger.error(f"Failed to connect, return code {rc}")
+
+
 mqtt_client = mqtt.Client()
+mqtt_client.on_connect = on_connect
 mqtt_client.username_pw_set(USERNAME, PASSWORD)
 mqtt_client.connect(MQTT_BROKER, port=1883, keepalive=60)
+mqtt_client.loop_start()
 
 # CORS Configuration
 origins = [
@@ -57,7 +66,7 @@ async def turn_off_light():
         command = {
             "downlinks" : [
                 {
-                    "f_port": 2,
+                    "f_port": 1,
                     "frm_payload": "AQ==",
                     "confirmed": False
                 }
