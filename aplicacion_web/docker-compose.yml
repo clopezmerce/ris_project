@@ -26,6 +26,18 @@ services:
     networks:
       - app_network  # Conectar a la red personalizada
 
+  frontend:
+    build:
+      context: ./frontend/app
+      dockerfile: ../Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
   cliente_dragino:
     build:
       context: ./cliente_dragino/
