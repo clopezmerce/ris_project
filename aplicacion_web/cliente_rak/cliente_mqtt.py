@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 
 THE_BROKER = "eu1.cloud.thethings.network"
-THE_TOPIC = "v3/upvdisca-rakwireless-rak3172-app/devices/eui-ac1f09fffe1787e9"
+THE_TOPIC = "v3/upvdisca-rakwireless-rak3172-app@ttn/devices/eui-ac1f09fffe1787e9/up"
 URL_BACKEND = "http://backend:8000"
 
 logging.basicConfig(level=logging.INFO)
@@ -23,8 +23,9 @@ def on_message(client, userdata, msg):
         sensor_id = dict_payload.get("end_device_ids", {}).get("device_id", {})
         decoded_payload = dict_payload.get("uplink_message", {}).get("decoded_payload", {})
 
-        temperature = decoded_payload.get("temperature")
-        humidity = decoded_payload.get("humidity")
+        temperature = decoded_payload.get("temperature_1")
+        humidity = decoded_payload.get("relative_humidity_2")
+        timestamp = dict_payload.get("received_at", datetime.now().isoformat())
 
         if temperature is not None and humidity is not None:
             # Crear el payload para enviar a la API
@@ -32,7 +33,7 @@ def on_message(client, userdata, msg):
                 "sensor_id": sensor_id,
                 "temperature": temperature,
                 "humidity": humidity,
-                "timestamp": datetime.now().isoformat()
+                "timestamp": timestamp
             }
 
             # Enviar los datos al backend API
