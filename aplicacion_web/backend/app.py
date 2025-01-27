@@ -14,7 +14,8 @@ app = FastAPI()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TOKEN_FILE = "access_token.txt"
+TOKEN_DIR = "/data"
+TOKEN_FILE = os.path.join(TOKEN_DIR, "access_token.txt")
 
 # Función para cargar el token desde un archivo
 def load_access_token():
