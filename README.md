@@ -4,7 +4,7 @@ Trabajo para la asignatura Redes Inalámbricas de Sensores MUICC
 
 ## Instructions
 
-In order to launch the web application docker and docker-compose are needed.
+In order to launch the web application, docker and docker-compose are needed.
 
 Once the docker-related services have been started we must execute:
 
