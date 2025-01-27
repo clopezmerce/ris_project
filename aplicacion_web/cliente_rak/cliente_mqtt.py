@@ -25,19 +25,19 @@ def on_message(client, userdata, msg):
 
         temperature = decoded_payload.get("temperature_1")
         humidity = decoded_payload.get("relative_humidity_2")
+        alarm = decoded_payload.get("alarm")
         timestamp = dict_payload.get("received_at", datetime.now().isoformat())
 
         if temperature is not None and humidity is not None:
-            # Crear el payload para enviar a la API
             sensor_data = {
                 "sensor_id": sensor_id,
                 "temperature": temperature,
                 "humidity": humidity,
+                "alarm": alarm,
                 "timestamp": timestamp
             }
 
-            # Enviar los datos al backend API
-            response = requests.post(f"{URL_BACKEND}/sensor_data/", json=sensor_data)
+            response = requests.post(f"{URL_BACKEND}/rak_data/", json=sensor_data)
 
             if response.status_code == 200:
                 print(f"Data sent successfully: {sensor_data}")

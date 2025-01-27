@@ -20,19 +20,15 @@ class InfluxDBDAL:
         write_api.write(self.bucket, record=point)
 
     def read_data(self, sensor_id: str, start_time: datetime = None, end_time: datetime = None):
-        # Si no se pasa un start_time, usamos el 1 de enero de 1970 como inicio
         if not start_time:
             start_time = datetime(1970, 1, 1)
     
-        # Si no se pasa un end_time, usamos la fecha y hora actual
         if not end_time:
             end_time = datetime.utcnow()
 
-        # Asegúrate de convertir las fechas a formato ISO 8601 sin "Z" para la consulta de InfluxDB
-        start_time_str = start_time.strftime('%Y-%m-%dT%H:%M:%SZ')  # Formato sin "Z"
-        end_time_str = end_time.strftime('%Y-%m-%dT%H:%M:%SZ')      # Formato sin "Z"
+        start_time_str = start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+        end_time_str = end_time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-        # Consulta con la fecha correctamente formateada para Flux
         query = f'''
         from(bucket: "{self.bucket}")
             |> range(start: {start_time_str}, stop: {end_time_str})
@@ -43,14 +39,12 @@ class InfluxDBDAL:
         query_api = self.client.query_api()
         result = query_api.query(query=query)
 
-        # Procesar y devolver los datos
         sensor_data_list = []
 
         for table in result:
             for record in table.records:
-                # Acceder directamente a las etiquetas y campos
                 sensor_data_list.append({
-                    "sensor_id": record["sensor_id"],  # Usar directamente "sensor_id" como etiqueta
+                    "sensor_id": record["sensor_id"],
                     "temperature": record["temperature"],
                     "humidity": record["humidity"],
                     "timestamp": record["_time"]
@@ -67,13 +61,11 @@ class InfluxDBDAL:
         query_api = self.client.query_api()
         result = query_api.query(query=query)
 
-        # Usar un conjunto para asegurarse de que los valores sean únicos
         sensors = set()
         for table in result:
             for record in table.records:
-                # Acceder a la etiqueta 'sensor_id'
                 sensor_id = record.values.get("sensor_id")
                 if sensor_id:
-                    sensors.add(sensor_id)  # Agregar al conjunto
+                    sensors.add(sensor_id)
     
-        return list(sensors)  # Convertir de nuevo a lista para devolverla
+        return list(sensors)

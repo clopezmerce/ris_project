@@ -27,7 +27,6 @@ def on_message(client, userdata, msg):
         humidity = decoded_payload.get("humidity")
 
         if temperature is not None and humidity is not None:
-            # Crear el payload para enviar a la API
             sensor_data = {
                 "sensor_id": sensor_id,
                 "temperature": temperature,
@@ -35,7 +34,6 @@ def on_message(client, userdata, msg):
                 "timestamp": datetime.now().isoformat()
             }
 
-            # Enviar los datos al backend API
             response = requests.post(f"{URL_BACKEND}/sensor_data/", json=sensor_data)
 
             if response.status_code == 200:

@@ -27,10 +27,8 @@ def on_message(client, userdata, msg):
         timestamp = decoded_payload.get("Data_time")
 
         if temperature is not None and humidity is not None and timestamp:
-            # Convertir timestamp a datetime
             timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
 
-            # Crear el payload para enviar a la API
             sensor_data = {
                 "sensor_id": "wimosa-albarracin-trh-drgn",
                 "temperature": temperature,
@@ -38,7 +36,6 @@ def on_message(client, userdata, msg):
                 "timestamp": timestamp.isoformat()
             }
 
-            # Enviar los datos al backend API
             response = requests.post(f"{URL_BACKEND}/sensor_data/", json=sensor_data)
 
             if response.status_code == 200:

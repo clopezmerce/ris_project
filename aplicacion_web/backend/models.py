@@ -4,9 +4,15 @@ from datetime import datetime
 
 class SensorData(BaseModel):
     """
-    Modelo para representar los datos de un sensor enviados a la API.
+    Model for the sensor data sent throught the API
     """
-    sensor_id: str = Field(..., description="Identificador único del sensor")
-    temperature: float = Field(..., description="Valor de la temperatura capturada por el sensor")
-    humidity: float = Field(..., description="Valor de la humedad capturada por el sensor", ge=0, le=100)
-    timestamp: datetime = Field(..., description="Marca de tiempo en formato ISO 8601")
+    sensor_id: str = Field(..., description="Node Identifier")
+    temperature: float = Field(..., description="Temperature value captured by the sensor")
+    humidity: float = Field(..., description="Relative humidity value captured by the sensor", ge=0, le=100)
+    timestamp: datetime = Field(..., description="Timestamp in ISO 8601 format")
+
+class RakData(SensorData):
+    """
+    Model for the sensor data sent by the RAK node through the API
+    """
+    alarm: bool = Field(..., description="Indicates if the node has turned the alarm on.")

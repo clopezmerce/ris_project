@@ -1,60 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import SensorList from './components/SensorList';
-import Graph from './components/Graph';
-import ApiService from './services/ApiService';
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import GraphPage from './pages/GraphPage';
+import StatusPage from './pages/StatusPage';
+import eyeHorusLogo from './assets/eye_horus.png';
 
 const App = () => {
-  const [sensors, setSensors] = useState([]); // IDs de sensores disponibles
-  const [selectedSensors, setSelectedSensors] = useState([]); // IDs seleccionados
-  const [sensorData, setSensorData] = useState([]); // Datos de sensores para la gráfica
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-
-  // Cargar los IDs de los sensores al inicio
-  useEffect(() => {
-    ApiService.getSensors().then(data => setSensors(data.sensors, data.startDate, data.endDate));
-  }, []);
-
-  // Función para seleccionar o deseleccionar sensores
-  const toggleSensorSelection = (sensorId) => {
-    setSelectedSensors(prev =>
-      prev.includes(sensorId) ? prev.filter(id => id !== sensorId) : [...prev, sensorId]
-    );
-  };
-
-  // Función para obtener datos y generar la gráfica
-  const handleGenerateGraph = async () => {
-    const startTime = startDate ? startDate.toISOString() : null;
-    const endTime = endDate ? endDate.toISOString() : null;
-
-    const dataPromises = selectedSensors.map(sensorId =>
-      ApiService.getSensorData(sensorId, startTime, endTime)
-    );
-    const sensorResults = await Promise.all(dataPromises);
-    
-    setSensorData(sensorResults.map((data, index) => ({
-      sensorId: selectedSensors[index],
-      readings: data, // Suponiendo que la API devuelve una lista de lecturas con timestamp
-    })));
-  };
-
   return (
-    <div>
-      <h1>Sensor Dashboard</h1>
-      <SensorList sensors={sensors} selectedSensors={selectedSensors} onToggle={toggleSensorSelection} />
-      <div style={{ marginBottom: '20px' }}>
-        <label>Desde: </label>
-        <DatePicker selected={startDate} onChange={setStartDate} dateFormat="yyyy-MM-dd HH:mm" showTimeSelect />
-        <label> Hasta: </label>
-        <DatePicker selected={endDate} onChange={setEndDate} dateFormat="yyyy-MM-dd HH:mm" showTimeSelect />
+    <Router>
+      <div className="container">
+        {/* Nav Menu */}
+        <nav className="navbar navbar-expand mb-4">
+          <div className="container-fluid">
+            <NavLink to="/" className="navbar-brand d-flex align-items-center">
+              <img src={eyeHorusLogo} alt="Eye Horus Logo" width="40" height="40" className="me-2" />
+              Sensor Dashboard
+            </NavLink>
+            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navbarNav">
+              <ul className="navbar-nav ms-auto">
+                <li className="nav-item">
+                  <NavLink to="/" className="nav-link">Gráficas</NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/status" className="nav-link">Estados</NavLink>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        {/* Routes */}
+        <div className="mt-4">
+          <Routes>
+            <Route path="/" element={<GraphPage />} />
+            <Route path="/status" element={<StatusPage />} />
+          </Routes>
+        </div>
       </div>
-      <button onClick={handleGenerateGraph} disabled={selectedSensors.length === 0}>
-        Generar Gráficas
-      </button>
-      {sensorData.length > 0 && <Graph sensorData={sensorData} />}
-    </div>
+    </Router>
   );
 };
 

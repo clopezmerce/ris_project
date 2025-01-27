@@ -2,6 +2,7 @@ import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import 'chartjs-adapter-date-fns';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 Chart.register(...registerables);
 
@@ -16,13 +17,11 @@ const Graph = ({ sensorData }) => {
     },
     scales: {
       x: {
-        type: 'time', // Ahora funcionará correctamente
+        type: 'time',
         time: {
           unit: 'minute',
           tooltipFormat: 'yyyy-MM-dd HH:mm',
-          displayFormats: {
-            minute: 'dd/MM HH:mm',
-          },
+          displayFormats: { minute: 'dd/MM HH:mm' },
         },
         title: { display: true, text: 'Fecha y Hora' },
       },
@@ -30,7 +29,7 @@ const Graph = ({ sensorData }) => {
     },
   };
 
-  // Datos para temperatura
+  // Temperatura
   const tempData = {
     datasets: sensorData.map((sensor, index) => ({
       label: `Temp - Sensor ${sensor.sensorId}`,
@@ -43,7 +42,7 @@ const Graph = ({ sensorData }) => {
     })),
   };
 
-  // Datos para humedad
+  // Humedad
   const humData = {
     datasets: sensorData.map((sensor, index) => ({
       label: `Hum - Sensor ${sensor.sensorId}`,
@@ -52,20 +51,31 @@ const Graph = ({ sensorData }) => {
         y: d.humidity,
       })),
       borderColor: colors[index % colors.length],
-      borderDash: [5, 5], // Línea punteada para humedad
+      borderDash: [5, 5],
       fill: false,
     })),
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
-      <div style={{ width: '700px', height: '300px' }}>
-        <h2>Temperatura</h2>
-        <Line data={tempData} options={commonOptions} />
-      </div>
-      <div style={{ width: '700px', height: '300px' }}>
-        <h2>Humedad</h2>
-        <Line data={humData} options={commonOptions} />
+    <div className="container mt-4">
+      <div className="row g-4">
+        <div className="col-lg-6 col-12">
+          <div className="card p-3 shadow">
+            <h4 className="text-center">Temperatura</h4>
+            <div className="chart-container" style={{ height: '300px' }}>
+              <Line data={tempData} options={commonOptions} />
+            </div>
+          </div>
+        </div>
+
+        <div className="col-lg-6 col-12">
+          <div className="card p-3 shadow">
+            <h4 className="text-center">Humedad</h4>
+            <div className="chart-container" style={{ height: '300px' }}>
+              <Line data={humData} options={commonOptions} />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
