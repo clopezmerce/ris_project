@@ -25,7 +25,7 @@ def on_message(client, userdata, msg):
 
         temperature = decoded_payload.get("temperature_1")
         humidity = decoded_payload.get("relative_humidity_2")
-        alarm = decoded_payload.get("alarm")
+        alarm = decoded_payload.get("digital_out_3")
         timestamp = dict_payload.get("received_at", datetime.now().isoformat())
 
         if temperature is not None and humidity is not None:
