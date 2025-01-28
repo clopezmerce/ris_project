@@ -133,7 +133,7 @@ async def save_sensor_data(sensor_data: SensorData):
 async def save_rak_data(rak_data: RakData):
     """Sends the data recieved from the RAK to InfluxDB."""
     global rak_alarm
-    sensor_status["rak_alarm"] = rak_data['alarm']
+    sensor_status["rak_alarm"] = rak_data.alarm
     sensor_data = SensorData(**rak_data.model_dump(exclude={"alarm"}))
     db_dal.write_data(sensor_data)
     reset_sensor_timer(sensor_data.sensor_id)

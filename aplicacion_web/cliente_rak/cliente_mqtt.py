@@ -37,6 +37,8 @@ def on_message(client, userdata, msg):
                 "timestamp": timestamp
             }
 
+            logger.info(f"Sensor Data: {sensor_data}")
+
             response = requests.post(f"{URL_BACKEND}/rak_data/", json=sensor_data)
 
             if response.status_code == 200:
